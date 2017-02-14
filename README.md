@@ -1,6 +1,5 @@
 # recipe-box
-fcc react project - recipe box
-(work in progres)
+fcc react project - recipe box (work in progress)
 
 Simple Recipe App that lets users add, edit, and delete recipes.
 
