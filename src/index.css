@@ -1,2 +1,5 @@
 .container {
   margin-top: 25px; }
+
+button {
+  margin-bottom: 10px !important; }
