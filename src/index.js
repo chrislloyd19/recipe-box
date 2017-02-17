@@ -11,6 +11,9 @@ import { Modal } from 'react-bootstrap';
 import { FormGroup } from 'react-bootstrap';
 import { ControlLabel } from 'react-bootstrap';
 import { FormControl } from 'react-bootstrap';
+import _ from 'lodash';
+
+const getId = () => _.random(1,100000).toString();
 
 class EditRecipe extends React.Component {
   constructor(props){
@@ -146,7 +149,7 @@ class RecipeBox extends React.Component {
   }
   save(name, ingredients) {
     if(name && ingredients) {
-      let newRecipe = {name:name, ingredients:ingredients.split(',')};
+      let newRecipe = {id: getId(), name:name, ingredients:ingredients.split(',')};
       let newRecipes = this.state.recipes.concat([newRecipe]);
 
       this.setState({recipes: newRecipes});
@@ -159,10 +162,11 @@ class RecipeBox extends React.Component {
     this.setState({recipes: newRecipes});
     localStorage.setItem('recipes', JSON.stringify(newRecipes));
   }
-  edit(index, name, ingredients) {
-    if(index && name && ingredients) {
+  edit(id, name, ingredients) {
+    if(id && name && ingredients) {
       let newRecipes = this.state.recipes;
-      newRecipes[index] = {name: name, ingredients: ingredients.split(',')};
+      let index = _.findIndex(newRecipes, (recipe) => recipe.id === id)
+      newRecipes[index] = {id: id, name: name, ingredients: ingredients.split(',')};
 
       this.setState({recipes: newRecipes});
       localStorage.setItem('recipes', JSON.stringify(newRecipes));
@@ -172,8 +176,8 @@ class RecipeBox extends React.Component {
     let recipes = this.state.recipes.map( (recipe, index) => {
         return (
           <Recipe
-            key={index}
-            id={index}
+            key={recipe.id}
+            id={recipe.id}
             recipe={recipe}
             remove={this.remove}
             edit={this.edit} />
