@@ -15,7 +15,7 @@ import { FormControl } from 'react-bootstrap';
 class EditRecipe extends React.Component {
   constructor(props){
     super(props);
-    this.state = {showModal: false, recipeName: this.props.recipe.name, ingredients: this.props.recipe.ingredients};
+    this.state = {showModal: false, recipeName: this.props.recipe.name, ingredients: this.props.recipe.ingredients.join(',')};
 
     this.close = this.close.bind(this);
     this.open = this.open.bind(this);
