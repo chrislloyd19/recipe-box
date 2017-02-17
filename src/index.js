@@ -12,6 +12,79 @@ import { FormGroup } from 'react-bootstrap';
 import { ControlLabel } from 'react-bootstrap';
 import { FormControl } from 'react-bootstrap';
 
+class EditRecipe extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {showModal: false, recipeName: this.props.recipe.name, ingredients: this.props.recipe.ingredients};
+
+    this.close = this.close.bind(this);
+    this.open = this.open.bind(this);
+    this.updateRecipeName = this.updateRecipeName.bind(this);
+    this.updateIngredients = this.updateIngredients.bind(this);
+  }
+
+  close() {
+    this.setState({ showModal: false });
+  }
+
+  open() {
+    this.setState({ showModal: true});
+  }
+
+  updateRecipeName(e) {
+    this.setState({recipeName: e.target.value});
+  }
+
+  updateIngredients(e) {
+    this.setState({ingredients: e.target.value});
+  }
+
+  render() {
+    return (
+      <div>
+        <Button
+          bsStyle="warning"
+          onClick={this.open}> Edit recipe </Button>
+
+        <Modal show={this.state.showModal} onHide={this.close}>
+          <Modal.Header closeButton>
+            <Modal.Title>Edit a recipe</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <form>
+              <FormGroup>
+                <ControlLabel>Recipe</ControlLabel>
+                <FormControl
+                  type="text"
+                  placeholder="Recipe Name"
+                  onChange={this.updateRecipeName}
+                  value={this.state.recipeName} />
+              </FormGroup>
+              <FormGroup>
+                <ControlLabel>Ingredients</ControlLabel>
+                <FormControl
+                  componentClass="textarea"
+                  placeholder="Enter ingredients separated,by,commas"
+                  onChange={this.updateIngredients}
+                  value={this.state.ingredients} />
+              </FormGroup>
+            </form>
+          </Modal.Body>
+          <Modal.Footer>
+                <Button
+                  bsStyle="primary"
+                  onClick={() => {this.props.save(this.props.id, this.state.recipeName, this.state.ingredients); this.close();}} > Save
+                </Button>
+                <Button
+                  onClick={this.close} > Close
+                </Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
+    )
+  }
+}
+
 class Recipe extends React.Component {
   constructor(props) {
     super(props);
@@ -44,6 +117,11 @@ class Recipe extends React.Component {
             <ListGroup>
               {ingredients}
             </ListGroup>
+            <EditRecipe
+              recipe={this.props.recipe}
+              id={this.props.id}
+              save={this.props.edit}
+            />
             <Button
               bsStyle="danger"
               onClick={() => { this.toggle(); this.props.remove(this.props.id);}}> Delete </Button>
@@ -60,6 +138,7 @@ class RecipeBox extends React.Component {
 
     this.save = this.save.bind(this);
     this.remove = this.remove.bind(this);
+    this.edit = this.edit.bind(this);
   }
   componentWillMount() {
     let recipes = JSON.parse(localStorage.getItem('recipes')) || [];
@@ -80,6 +159,15 @@ class RecipeBox extends React.Component {
     this.setState({recipes: newRecipes});
     localStorage.setItem('recipes', JSON.stringify(newRecipes));
   }
+  edit(index, name, ingredients) {
+    if(index && name && ingredients) {
+      let newRecipes = this.state.recipes;
+      newRecipes[index] = {name: name, ingredients: ingredients.split(',')};
+
+      this.setState({recipes: newRecipes});
+      localStorage.setItem('recipes', JSON.stringify(newRecipes));
+    }
+  }
   render() {
     let recipes = this.state.recipes.map( (recipe, index) => {
         return (
@@ -87,7 +175,8 @@ class RecipeBox extends React.Component {
             key={index}
             id={index}
             recipe={recipe}
-            remove={this.remove} />
+            remove={this.remove}
+            edit={this.edit} />
         )
     });
     return (
