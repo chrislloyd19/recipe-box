@@ -13,6 +13,17 @@ import { ControlLabel } from 'react-bootstrap';
 import { FormControl } from 'react-bootstrap';
 
 class Recipe extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false
+    };
+
+    this.toggle = this.toggle.bind(this);
+  }
+  toggle() {
+    this.setState({ open: !this.state.open });
+  }
   render() {
     let ingredients = this.props.recipe.ingredients.map(function(ingredient, index) {
       return (
@@ -21,9 +32,12 @@ class Recipe extends React.Component {
     });
     return (
       <div>
+      <Button bsStyle="info" onClick={this.toggle}>
+        {this.props.recipe.name}
+      </Button>
         <Panel
-          bsStyle="info"
-          header={this.props.recipe.name}
+          collapsible
+          expanded={this.state.open}
           >
             <h3 className="text-center">Ingredients</h3>
             <hr/>
@@ -32,7 +46,7 @@ class Recipe extends React.Component {
             </ListGroup>
             <Button
               bsStyle="danger"
-              onClick={() => this.props.remove(this.props.id)}> Delete </Button>
+              onClick={() => { this.toggle(); this.props.remove(this.props.id);}}> Delete </Button>
         </Panel>
       </div>
     )
