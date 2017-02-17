@@ -90,7 +90,7 @@ class AddRecipe extends React.Component {
   }
 
   open() {
-    this.setState({ showModal: true });
+    this.setState({ showModal: true, recipeName: '', ingredients: ''});
   }
 
   updateRecipeName(e) {
