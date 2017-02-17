@@ -24,12 +24,15 @@ class Recipe extends React.Component {
         <Panel
           bsStyle="info"
           header={this.props.recipe.name}
-          collapsible>
+          >
             <h3 className="text-center">Ingredients</h3>
             <hr/>
             <ListGroup>
               {ingredients}
             </ListGroup>
+            <Button
+              bsStyle="danger"
+              onClick={() => this.props.remove(this.props.id)}> Delete </Button>
         </Panel>
       </div>
     )
@@ -42,6 +45,7 @@ class RecipeBox extends React.Component {
     this.state = {recipes: []};
 
     this.save = this.save.bind(this);
+    this.remove = this.remove.bind(this);
   }
   componentWillMount() {
     let recipes = JSON.parse(localStorage.getItem('recipes')) || [];
@@ -56,12 +60,20 @@ class RecipeBox extends React.Component {
       localStorage.setItem('recipes', JSON.stringify(newRecipes));
     }
   }
+  remove(index) {
+    let newRecipes = this.state.recipes.filter((_, i) => i !== index);
+
+    this.setState({recipes: newRecipes});
+    localStorage.setItem('recipes', JSON.stringify(newRecipes));
+  }
   render() {
-    let recipes = this.state.recipes.map(function(recipe, index) {
+    let recipes = this.state.recipes.map( (recipe, index) => {
         return (
           <Recipe
             key={index}
-            recipe={recipe} />
+            id={index}
+            recipe={recipe}
+            remove={this.remove} />
         )
     });
     return (
