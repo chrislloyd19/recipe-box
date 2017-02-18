@@ -156,8 +156,8 @@ class RecipeBox extends React.Component {
       localStorage.setItem('recipes', JSON.stringify(newRecipes));
     }
   }
-  remove(index) {
-    let newRecipes = this.state.recipes.filter((_, i) => i !== index);
+  remove(id) {
+    let newRecipes = this.state.recipes.filter((_) => _.id !== id);
 
     this.setState({recipes: newRecipes});
     localStorage.setItem('recipes', JSON.stringify(newRecipes));
